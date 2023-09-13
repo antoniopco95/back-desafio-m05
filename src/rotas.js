@@ -7,8 +7,8 @@ const register = async (req, res) => {
    try {
         const { nome, sobrenome, email, senha, telefone, data_nascimento, genero } = req.body;
 
-        if(!nome || !sobrenome || !email || !telefone || !data_nascimento || !genero){
-            return res.json({ message: "Todos os campos devem ser preenchido "})
+        if(!nome || !sobrenome || !email || !senha || !!cpf || !telefone){
+            return res.json({ error: "Todos os campos devem ser preenchido "})
         }
         if (!validateEmailDomain(email)) {
             return res.status(400).json({ error: 'Por favor, use um e-mail válido' });}
@@ -19,9 +19,8 @@ const register = async (req, res) => {
             sobrenome,
             email,
             senha: hash,
+            cpf,            
             telefone,
-            data_nascimento,
-            genero
         }).returning('*');
         res.json(user[0]);
     } catch (error) {
