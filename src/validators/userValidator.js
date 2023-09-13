@@ -6,5 +6,6 @@ validateEmailDomain = (email) => {
 };
 
 module.exports={
-    validateEmailDomain,
+    validateEmailDomain, emailExists
 }
+>>>>>>> d31ab88e1a365d8f7a8cf8226871fdccfad23cd5
