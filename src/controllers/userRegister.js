@@ -1,5 +1,5 @@
-const { validateEmailDomain, emailExists } = require('./validators/userValidator');
-const knex = require('knex')(require('./knexfile').development);
+const { validateEmailDomain, emailExists } = require('../validators/userValidator');
+const knex = require('knex')(require('../knexfile').development);
 const bcrypt = require('bcryptjs');
 const jwt = require('jwt-simple');
 
@@ -8,7 +8,7 @@ const register = async (req, res) => {
         const { nome, email, senha , cpf , telefone } = req.body;
         
         if(!nome || !email || !senha || !cpf || !telefone){
-            return res.json({ error: "Todos os campos devem ser preenchido "})
+            return res.json({ error: "Todos os campos devem ser preenchidos"})
         }
         console.log(1)
 
