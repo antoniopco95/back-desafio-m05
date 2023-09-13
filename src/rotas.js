@@ -7,7 +7,7 @@ const register = async (req, res) => {
    try {
         const { nome, sobrenome, email, senha, telefone, data_nascimento, genero } = req.body;
 
-        if(!nome || !sobrenome || !email || !senha || !!cpf || !telefone){
+        if(!nome || !sobrenome || !email || !senha || !cpf || !telefone){
             return res.json({ error: "Todos os campos devem ser preenchido "})
         }
         if (!validateEmailDomain(email)) {
