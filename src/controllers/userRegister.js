@@ -29,12 +29,11 @@ const register = async (req, res) => {
         nome,
         email,
         senha: hash,
-        cpf,
-        telefone,
       })
       .returning("*");
     res.json(user[0]);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Erro ao registrar o usuário." });
   }
 };
