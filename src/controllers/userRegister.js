@@ -1,22 +1,20 @@
-const {
-  validateEmailDomain,
-  emailExists,
-} = require("../validators/userValidator");
+const { validateEmailDomain } = require("../validators/userValidator");
 const knex = require("knex")(require("../knexfile").development);
 const bcrypt = require("bcryptjs");
-const jwt = require("jwt-simple");
 
 const register = async (req, res) => {
   try {
     const { nome, email, senha } = req.body;
 
     if (!nome || !email || !senha) {
-      return res.json({ error: "Todos os campos devem ser preenchidos" });
+      return res
+        .status(400)
+        .json({ error: "Todos os campos devem ser preenchidos" });
     }
 
     const result = await knex("usuarios").where("email", email).first();
     if (result) {
-      return res.json({ error: "O email ja se encontra em uso" });
+      return res.status(400).json({ error: "O email ja se encontra em uso" });
     }
 
     if (!validateEmailDomain(email)) {
