@@ -28,7 +28,7 @@ const register = async (req, res) => {
         email,
         senha: hash,
       })
-      .returning("*");
+      .returning(["nome", "email"]);
     res.json(user[0]);
   } catch (error) {
     console.log(error);
