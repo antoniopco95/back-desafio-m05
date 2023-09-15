@@ -15,7 +15,6 @@ const {
   paidCharges,
 } = require("./controllers/charges");
 const { validateReq } = require("./middlewares/validation");
-const { editUserSchema } = require("./validators/editSchema");
 const {
   registerUserSchema,
   registerClientSchema,
@@ -25,7 +24,7 @@ rotas.use(express.json());
 
 rotas.post("/registrar", validateReq(registerUserSchema), register);
 rotas.post("/login", login);
-rotas.put("/editar/:id", authorizeUser, validateReq(editUserSchema), editUser);
+rotas.put("/editar/:id", authorizeUser, editUser);
 rotas.get("/clientes", authorizeUser, getClient);
 rotas.get("/cobrancas/vencidas", authorizeUser, chargesOverdue);
 rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges);
