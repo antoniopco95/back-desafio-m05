@@ -4,14 +4,10 @@ const passwordJwt = process.env.JWT_HASH;
 
 const authorizeUser = async (req, res, next) => {
   const tokenAUt = req.headers['authorization'];
-  console.log(tokenAUt)
 
   if (!tokenAUt) {
     return res.status(401).json({ mensagem: "Não autorizado" });
   }
-
-  // const token = tokenAUt.split(" ")[1];
-
   try {
     const { id } = jwt.verify(tokenAUt, passwordJwt);
     console.log(id)
@@ -26,7 +22,6 @@ const authorizeUser = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error)
     return res.status(401).json({ mensagem: "Não autorizado" });
   }
 };

@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const { validateEmailDomain } = require("../validators/userValidator");
 const knex = require("knex")(require("../knexfile").development);
 const editUser = async (req,res)=>{
-    console.log(1)
+    
     const id = req.params.id
     const { nome, email, senha, cpf, telefone } = req.body;
     try {
