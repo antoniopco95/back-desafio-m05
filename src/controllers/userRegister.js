@@ -32,7 +32,7 @@ const register = async (req, res) => {
       })
       .returning(["nome", "email"]);
 
-    res.json({ message: "Cadastro Concluido" });
+    return res.json({ message: "Cadastro Concluido" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Erro ao registrar o usuário." });

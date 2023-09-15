@@ -3,7 +3,7 @@ const knex = require("knex")(require("../knexfile").development);
 const getClient = async (req,res)=>{
     try{
         const client = await knex('cliente').select("*");
-        res.status(200).json(client)
+        return res.status(200).json(client)
 
     }catch(error){
         console.log(error)
@@ -21,7 +21,7 @@ const getClientDefaulter=async(req,res)=>{
                                 .whereNot('cobranca.status', 'Vencida')
                                 .orWhereNull('cobranca.status')
                                 .distinct(); // Usando distinct para evitar duplicação
-        res.json(defaulter);
+       return res.json(defaulter);
     } catch (error) {
         res.status(500).send('Erro ao buscar clientes em dia.');
     }
@@ -35,7 +35,7 @@ const getClientToday= async(req,res)=>{
                                 .whereNot('cobranca.status', 'Paga')
                                 .orWhereNull('cobranca.status')
                                 .distinct(); // Usando distinct para evitar duplicação
-        res.json(today);
+        return res.json(today);
     } catch (error) {
         res.status(500).send('Erro ao buscar clientes em dia.');
     }

@@ -32,7 +32,7 @@ const expectedCharges = async (req, res) => {
       totalExpected += parseFloat(element.valor);
     });
 
-    res.json({ cobrancas_previstas: expected, total_previsto: totalExpected });
+    return res.json({ cobrancas_previstas: expected, total_previsto: totalExpected });
   } catch (error) {
     res.status(500).send("Erro ao buscar o total devido por cliente.");
   }
@@ -49,7 +49,7 @@ const paidCharges = async (req, res) => {
       totalpaid += parseFloat(element.valor);
     });
 
-    res.json({ cobrancas_pagas: paid, total_pago: totalpaid });
+    return  res.json({ cobrancas_pagas: paid, total_pago: totalpaid });
   } catch (error) {
     console.log(error);
     res.status(500).send("Erro ao buscar o total devido por cliente.");
