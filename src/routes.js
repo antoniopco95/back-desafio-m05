@@ -4,7 +4,7 @@ const{ editUser} = require("./controllers/editUser")
 const {authorizeUser} = require("./middlewares/authentication")
 const { register } = require("./controllers/userRegister");
 const { login } = require("./controllers/userLogin");
-const { getClient } = require("./controllers/client");
+const { getClient, getClientDefaulter, getClientToday } = require("./controllers/client");
 const { chargesOverdue, expectedCharges, paidCharges } = require("./controllers/charges");
 
 rotas.use(express.json());
@@ -16,4 +16,6 @@ rotas.get("/clientes", authorizeUser, getClient)
 rotas.get("/cobrancas/vencidas", authorizeUser, chargesOverdue)
 rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges)
 rotas.get("/cobrancas/pagas", authorizeUser, paidCharges)
+rotas.get("/clientes/inadimplentes", authorizeUser, getClientDefaulter)
+rotas.get("/clientes/em-dia", authorizeUser, getClientToday)
 module.exports = rotas;
