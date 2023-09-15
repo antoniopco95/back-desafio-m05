@@ -16,21 +16,23 @@ const register = async (req, res) => {
       return res.status(400).json({ error: "Por favor, use um e-mail válido" });
     }
 
-    const  existEmail = await knex("usuarios").where("email", email).first();
+    const existEmail = await knex("usuarios").where("email", email).first();
 
     if (existEmail) {
       return res.status(400).json({ error: "O email ja se encontra em uso" });
     }
-    
+
     const hash = await bcrypt.hash(senha, 10);
 
-     await knex("usuarios").insert({
-                                nome,
-                                email,
-                                senha: hash,
-                              }).returning(["nome", "email"]);
+    await knex("usuarios")
+      .insert({
+        nome,
+        email,
+        senha: hash,
+      })
+      .returning(["nome", "email"]);
 
-    res.json({message:"Cadastro Concluido"});
+    res.json({ message: "Cadastro Concluido" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Erro ao registrar o usuário." });
@@ -38,5 +40,5 @@ const register = async (req, res) => {
 };
 
 module.exports = {
-  register
+  register,
 };
