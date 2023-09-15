@@ -42,7 +42,7 @@ const editUser = async (req,res)=>{
 
         await knex('usuarios').where('id', id).update(updatedUser);
 
-        res.json({ message: 'Usuário atualizado com sucesso.' });
+        res.json({ message: 'Usuário atualizado com sucesso.', updatedUser }  );
 
     } catch (error) {
         res.status(500).json({ message: 'Erro ao atualizar usuário.' });
