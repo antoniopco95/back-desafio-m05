@@ -10,7 +10,7 @@ const authorizeUser = async (req, res, next) => {
   }
   try {
     const { id } = jwt.verify(tokenAUt, passwordJwt);
-    console.log(id)
+
 
     const userExists = await knex("usuarios").where("id", id).first();
 
