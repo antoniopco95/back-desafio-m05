@@ -1,6 +1,5 @@
 const knex = require("knex")(require("../knexfile").development);
 
-knex
 const getClient = async (req,res)=>{
     try{
         const client = await knex('cliente').select("*");
