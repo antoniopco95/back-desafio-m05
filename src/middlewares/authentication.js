@@ -1,18 +1,22 @@
 const jwt = require("jsonwebtoken");
-const { default: knex } = require("knex");
+const knex = require("knex")(require("../knexfile").development);
 const passwordJwt = process.env.JWT_HASH;
 
-const authorizeUser = async (req, res) => {
-  const { authorization } = req.headers;
+const authorizeUser = async (req, res, next) => {
+  const tokenAut = req.headers['authorization'];
 
-  if (!authorization) {
+  if (!tokenAut) {
     return res.status(401).json({ mensagem: "Não autorizado" });
   }
-
-  const token = authorization.split(" ")[1];
+  const parts = tokenAut.split(' ');
+  if (parts.length !== 2) {
+    return res.status(401).json({ error: 'Erro no token.' });
+  }
+   const token = parts[1];
 
   try {
     const { id } = jwt.verify(token, passwordJwt);
+
 
     const userExists = await knex("usuarios").where("id", id).first();
 
