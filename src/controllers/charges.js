@@ -15,7 +15,10 @@ const chargesOverdue = async (req, res) => {
 
     return res
       .status(200)
-      .json({ cobrancas_vencidas: overdue, Total_Vencido: totalDue });
+      .json({
+        cobrancas_vencidas: overdue,
+        Total_Vencido: totalDue.toFixed(2),
+      });
   } catch (error) {
     res.status(500).send("Erro ao buscar o total devido por cliente.");
   }
@@ -32,7 +35,10 @@ const expectedCharges = async (req, res) => {
       totalExpected += parseFloat(element.valor);
     });
 
-    return res.json({ cobrancas_previstas: expected, total_previsto: totalExpected });
+    return res.json({
+      cobrancas_previstas: expected,
+      total_previsto: totalExpected.toFixed(2),
+    });
   } catch (error) {
     res.status(500).send("Erro ao buscar o total devido por cliente.");
   }
@@ -49,7 +55,10 @@ const paidCharges = async (req, res) => {
       totalpaid += parseFloat(element.valor);
     });
 
-    return  res.json({ cobrancas_pagas: paid, total_pago: totalpaid });
+    return res.json({
+      cobrancas_pagas: paid,
+      total_pago: totalpaid.toFixed(2),
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Erro ao buscar o total devido por cliente.");
