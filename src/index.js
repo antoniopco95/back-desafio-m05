@@ -7,7 +7,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://localhost:3000",
+    origin: `http://localhost:${process.env.PORT}`,
     methods: ["GET", "POST", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
