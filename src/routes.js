@@ -8,6 +8,7 @@ const {
   getClient,
   getClientDefaulter,
   getClientToday,
+  createNewClient
 } = require("./controllers/client");
 const {
   chargesOverdue,
@@ -31,4 +32,5 @@ rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges);
 rotas.get("/cobrancas/pagas", authorizeUser, paidCharges);
 rotas.get("/clientes/inadimplentes", authorizeUser, getClientDefaulter);
 rotas.get("/clientes/em-dia", authorizeUser, getClientToday);
-module.exports = rotas;
+rotas.post("/create-cliente", authorizeUser, validateReq(registerClientSchema), createNewClient),
+  module.exports = rotas;
