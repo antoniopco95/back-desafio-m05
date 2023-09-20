@@ -1,15 +1,15 @@
 const express = require("express");
 const rotas = require("./routes");
 const PORT = process.env.PORT || 8000;
-/* const cors = require("cors"); */
+const cors = require("cors");
 const app = express();
 
-/* app.use(
+app.use(
   cors({
-    origin: "https://front-equipe-09-git-main-antoniopco95.vercel.app",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })) */
+  }))
 app.use(express.json());
 app.use(rotas);
 
