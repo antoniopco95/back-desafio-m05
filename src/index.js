@@ -5,7 +5,7 @@ const app = express();
 const cors = require("cors");
 
 const allowedOrigins = [
-  "https://localhost:5173",
+  "http://localhost:5173",
   "https://front-equipe-09-git-main-antoniopco95.vercel.app",
 ];
 
