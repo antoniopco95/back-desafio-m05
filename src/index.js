@@ -4,20 +4,19 @@ const PORT = process.env.PORT || 8000;
 const app = express();
 const cors = require("cors");
 
+const allowedOrigins = [
+  "https://localhost:5173",
+  "https://front-equipe-09-git-main-antoniopco95.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-/* app.use(
-  cors({
-    origin: "https://front-equipe-09-git-main-antoniopco95.vercel.app",
-    methods: ["GET", "POST", "PUT"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-); */
+
 app.use(express.json());
 app.use(rotas);
 
