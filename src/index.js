@@ -6,7 +6,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://front-equipe-09-git-main-antoniopco95.vercel.app/",
+    origin: "http://front-equipe-09-git-main-antoniopco95.vercel.app",
     methods: ["GET", "POST", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }))
