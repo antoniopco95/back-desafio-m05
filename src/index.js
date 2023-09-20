@@ -7,7 +7,6 @@ const app = express();
 const corsOptions = {
   origin: "https://front-equipe-09-git-main-antoniopco95.vercel.app",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  optionsSuccessStatus: 204, // No Content response for preflight requests
   allowedHeaders: "Content-Type,Authorization",
 };
 
