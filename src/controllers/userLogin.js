@@ -6,6 +6,7 @@ const passwordJwt = process.env.JWT_HASH;
 const login = async (req, res) => {
   try {
     const { email, senha } = req.body;
+    console.log(req.body)
 
     const user = await knex("usuarios").where("email", email).first();
 
