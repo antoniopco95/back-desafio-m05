@@ -63,13 +63,19 @@ const createNewClient = async (req, res) => {
 
 const getClientDefaulter = async (req, res) => {
     try {
-        const defaulter = await knex.select('cliente.cliente_id', 'cliente.nome', 'cliente.cpf')
-            .from('cliente')
-            .leftJoin('cobranca', 'cliente.cliente_id', 'cobranca.cliente_id')
-            .whereNot('cobranca.status', 'Vencida')
-            .orWhereNull('cobranca.status')
-            .distinct(); // Usando distinct para evitar duplicação
-        return res.json(defaulter);
+        const subquery = knex('cobranca')
+        .distinct('cliente_id')
+        .where('data_vencimento', '<', knex.fn.now())
+        .andWhere('paga', '=', false);
+        
+        knex('cliente')
+        .select('cliente.cliente_id', 'cliente.nome')
+        .leftJoin(subquery.as('ci'), 'cliente.cliente_id', 'ci.cliente_id')
+        .select(knex.raw('CASE WHEN "ci"."cliente_id" IS NOT NULL THEN ? ELSE ? END AS status', ['Inadimplente', 'Em dia']))
+        .then(result =>{
+            const defaulter= result.filter(r => r.status === 'Inadimplente');
+            return res.status(200).json(defaulter);
+        })
     } catch (error) {
         res.status(500).send('Erro ao buscar clientes em dia.');
     }
@@ -77,15 +83,22 @@ const getClientDefaulter = async (req, res) => {
 }
 const getClientToday = async (req, res) => {
     try {
-        const today = await knex.select('cliente.cliente_id', 'cliente.nome', 'cliente.cpf')
-            .from('cliente')
-            .leftJoin('cobranca', 'cliente.cliente_id', 'cobranca.cliente_id')
-            .whereNot('cobranca.status', 'Paga')
-            .orWhereNull('cobranca.status')
-            .distinct(); // Usando distinct para evitar duplicação
-        return res.json(today);
+        const subquery = knex('cobranca')
+        .distinct('cliente_id')
+        .where('data_vencimento', '<', knex.fn.now())
+        .andWhere('paga', '=', false);
+
+        knex('cliente')
+        .select('cliente.cliente_id', 'cliente.nome')
+        .leftJoin(subquery.as('ci'), 'cliente.cliente_id', 'ci.cliente_id')
+        .select(knex.raw('CASE WHEN "ci"."cliente_id" IS NOT NULL THEN ? ELSE ? END AS status', ['Inadimplente', 'Em dia']))
+        .then(result =>{
+            const clientToday = result.filter(r => r.status === 'Em dia');
+            return res.status(200).json(clientToday);
+        })
     } catch (error) {
-        res.status(500).json({error:'Erro ao buscar clientes em dia.'});
+        
+        return res.status(500).json({error:'Erro ao buscar clientes em dia.'});
     }
 }
 
