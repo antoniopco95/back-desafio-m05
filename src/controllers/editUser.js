@@ -5,11 +5,10 @@ const editUser = async (req, res) => {
   try {
     const id = req.params.id;
     const { nome, email, senha, cpf, telefone } = req.body;
-    console.log(req.body)
     const user = await knex("usuarios").where("id", id).first();
 
     if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
+      return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
     const updatedUser = {};
@@ -48,8 +47,7 @@ const editUser = async (req, res) => {
     const { senha: _, ...userEdit } = updatedUser;
     return res.json({ message: "Usuário atualizado com sucesso.", userEdit });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: "Erro ao atualizar usuário." });
+    return res.status(500).json({ error: "Erro ao atualizar usuário." });
   }
 };
 

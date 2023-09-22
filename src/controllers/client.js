@@ -7,8 +7,7 @@ const getClient = async (req, res) => {
         return res.status(200).json(client)
 
     } catch (error) {
-        console.log(error)
-        res.status(500).send('Erro ao buscar clientes.');
+        return res.status(500).json({error:'Erro ao buscar clientes.'});
     }
 }
 
@@ -46,6 +45,7 @@ const createNewClient = async (req, res) => {
             telefone,
             endereco,
             cep,
+            complemento,
             bairro,
             cidade,
             uf
@@ -54,7 +54,6 @@ const createNewClient = async (req, res) => {
         return res.json({ message: "Cadastro Concluido" });
     }
     catch (error) {
-        console.log(error)
         return res.status(500).json({ error: "Erro ao registrar o cliente." });
     }
 }
@@ -86,7 +85,7 @@ const getClientToday = async (req, res) => {
             .distinct(); // Usando distinct para evitar duplicação
         return res.json(today);
     } catch (error) {
-        res.status(500).send('Erro ao buscar clientes em dia.');
+        res.status(500).json({error:'Erro ao buscar clientes em dia.'});
     }
 }
 

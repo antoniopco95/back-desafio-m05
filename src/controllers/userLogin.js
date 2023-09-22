@@ -6,12 +6,11 @@ const passwordJwt = process.env.JWT_HASH;
 const login = async (req, res) => {
   try {
     const { email, senha } = req.body;
-    console.log(req.body)
 
     const user = await knex("usuarios").where("email", email).first();
 
     if (!user) {
-      return res.status(404).json({ mensagem: "E-mail ou senha inválido." });
+      return res.status(404).json({ error: "E-mail ou senha inválido." });
     }
 
     const validPassword = await bcrypt.compare(senha, user.senha);
@@ -26,7 +25,7 @@ const login = async (req, res) => {
 
     return res.json({ usuario: userLogged, token });
   } catch (error) {
-    return res.status(500).json({ mensagem: "Erro ao logar o usuário." });
+    return res.status(500).json({ error: "Erro ao logar o usuário." });
   }
 };
 
