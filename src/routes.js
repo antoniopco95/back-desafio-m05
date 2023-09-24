@@ -14,6 +14,7 @@ const {
   chargesOverdue,
   expectedCharges,
   paidCharges,
+  createCharge
 } = require("./controllers/charges");
 const { validateReq } = require("./middlewares/validation");
 const {
@@ -30,6 +31,7 @@ rotas.get("/clientes", authorizeUser, getClient);
 rotas.get("/cobrancas/vencidas", authorizeUser, chargesOverdue);
 rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges);
 rotas.get("/cobrancas/pagas", authorizeUser, paidCharges);
+rotas.post("/cobrancas", authorizeUser, createCharge);
 rotas.get("/clientes/inadimplentes", authorizeUser, getClientDefaulter);
 rotas.get("/clientes/em-dia", authorizeUser, getClientToday);
 rotas.post("/create-cliente", authorizeUser, validateReq(registerClientSchema), createNewClient),

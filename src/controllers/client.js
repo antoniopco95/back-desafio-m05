@@ -3,7 +3,8 @@ const { validateEmailDomain } = require("../validators/userValidator");
 
 const getClient = async (req, res) => {
     try {
-        const client = await knex('cliente').select("*");
+        const { cliente_id } = req.body;
+        const client = await knex('cliente').select("*").where("id", cliente_id).first();
         return res.status(200).json(client)
 
     } catch (error) {

@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const { validateEmailDomain } = require("../validators/userValidator");
 const knex = require("knex")(require("../knexfile").development);
+
+
 const editUser = async (req, res) => {
   const id = req.params.id;
   const { nome, email, senha, cpf, telefone } = req.body;
@@ -40,7 +42,7 @@ const editUser = async (req, res) => {
     if (cpf) updatedUser.cpf = cpf;
     if (telefone) updatedUser.telefone = telefone;
 
-     await knex("usuarios").where("id", id).update(updatedUser);
+    await knex("usuarios").where("id", id).update(updatedUser);
     const { senha: _, ...userEdit } = updatedUser;
     return res.json({ message: "Usuário atualizado com sucesso.", userEdit });
   } catch (error) {
@@ -48,4 +50,8 @@ const editUser = async (req, res) => {
   }
 };
 
-module.exports = { editUser };
+
+
+
+
+module.exports = { editUser, getUser };
