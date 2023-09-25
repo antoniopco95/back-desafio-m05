@@ -28,24 +28,23 @@ const {
 
 rotas.use(express.json());
 
+rotas.get("/usuarios", authorizeUser, getUser)
 rotas.post("/registrar", validateReq(registerUserSchema), register);
 rotas.post("/login", login);
-rotas.get("/usuarios", authorizeUser, getUser)
 rotas.put("/editar/:id", authorizeUser, editUser);
 
 rotas.get("/cobrancas/vencidas", authorizeUser, chargesOverdue);
 rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges);
 rotas.get("/cobrancas/pagas", authorizeUser, paidCharges);
-rotas.post("/cobrancas", authorizeUser, createCharge);
 rotas.get("/cobrancas", authorizeUser, getCharges)
 rotas.get("/cliente/cobranca/:id", authorizeUser, myCharges)
+rotas.post("/cobrancas", authorizeUser, createCharge);
 
 rotas.get("/clientes/inadimplentes", authorizeUser, getClientDefaulter);
 rotas.get("/clientes/em-dia", authorizeUser, getClientToday);
-rotas.post("/create-cliente", authorizeUser, validateReq(registerClientSchema), createNewClient),
 rotas.get("/cliente/:id", authorizeUser,client )
-rotas.put('/cliente/:id', authorizeUser, editClient)
 rotas.get("/clientes", authorizeUser, getClient);
-rotas.put("/clientes/:id", authorizeUser, editClient)
+rotas.post("/create-cliente", authorizeUser, validateReq(registerClientSchema), createNewClient),
+rotas.put('/cliente/:id', authorizeUser, editClient)
 
   module.exports = rotas;
