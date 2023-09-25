@@ -25,14 +25,14 @@ const getClient = async (req, res) => {
 
 const client = async(req,res) => {
   try{
-     const { cliente_id } = req.params;
-        const client = await knex('cliente').select("*").where("id", cliente_id).first();
+     const id = req.params.id;
+        const client = await knex('cliente').select("*").where("id", id).first();
         return res.status(200).json(client)
   }
   catch(error) {
      return res.status(500).json({error:'Erro ao buscar cliente.'});
 }
-  
+}
 
 const createNewClient = async (req, res) => {
 
