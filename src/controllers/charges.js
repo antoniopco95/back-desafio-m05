@@ -55,4 +55,52 @@ const paidCharges = async (req, res) => {
   }
 };
 
-module.exports = { chargesOverdue, expectedCharges, paidCharges };
+
+const createCharge = async (req, res) => {
+  try {
+    const { cliente_id, valor, paga, data_vencimento } = req.body;
+    if (!cliente_id || !valor || !paga || !data_vencimento) {
+      return res
+        .status(400)
+        .json({ error: "Todos os campos obrigatórios devem ser preenchidos" });
+    }
+    const client = await knex('cliente').select("*").where("id", cliente_id).first();
+    if (!client) {
+      return res
+        .status(400)
+        .json({ error: "Por favor inserir cliente existente" });
+    }
+    await knex('cliente').insert({
+      cliente_id,
+      valor,
+      data_vencimento,
+      paga
+    }).returning('*');
+
+    return res.json({ message: "Cobraça cadastrada com sucesso" });
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send("Erro ao criar cobrança.");
+  }
+};
+
+const getCharge = async (req, res) => {
+  const { cliente_id, valor, paga, data_vencimento, descricao } = req.body;
+  try {
+    const client = await knex("cobrancas").where("cliente_id", cliente_id).first();
+    if (!client) {
+      return res
+        .status(400)
+        .json({ error: "Cliente inexistente" });
+    }
+    return res.status(200).json(cliente_id, valor, paga, data_vencimento, descricao)
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).send('Erro ao buscar cliente.');
+  }
+
+}
+
+module.exports = { chargesOverdue, expectedCharges, paidCharges, createCharge, getCharge };

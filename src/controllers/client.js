@@ -16,11 +16,23 @@ const getClient = async (req, res) => {
             return res.status(200).json(result)
         })
 
+
     } catch (error) {
-        console.log(error)
+        
         return res.status(500).json({error:'Erro ao buscar clientes.'});
     }
 }
+
+const client = async(req,res) => {
+  try{
+     const { cliente_id } = req.params;
+        const client = await knex('cliente').select("*").where("id", cliente_id).first();
+        return res.status(200).json(client)
+  }
+  catch(error) {
+     return res.status(500).json({error:'Erro ao buscar cliente.'});
+}
+  
 
 const createNewClient = async (req, res) => {
 
@@ -113,4 +125,4 @@ const getClientToday = async (req, res) => {
     }
 }
 
-module.exports = { getClient, getClientDefaulter, getClientToday, createNewClient };
+module.exports = { getClient, getClientDefaulter, getClientToday, createNewClient, client };

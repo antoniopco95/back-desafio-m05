@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const { validateEmailDomain } = require("../validators/userValidator");
 const knex = require("knex")(require("../knexfile").development);
+
+
 const editUser = async (req, res) => {
   try {
     const id = req.params.id;
@@ -43,7 +45,7 @@ const editUser = async (req, res) => {
     if (cpf) updatedUser.cpf = cpf;
     if (telefone) updatedUser.telefone = telefone;
 
-     await knex("usuarios").where("id", id).update(updatedUser);
+    await knex("usuarios").where("id", id).update(updatedUser);
     const { senha: _, ...userEdit } = updatedUser;
     return res.json({ message: "Usuário atualizado com sucesso.", userEdit });
   } catch (error) {
@@ -51,4 +53,24 @@ const editUser = async (req, res) => {
   }
 };
 
-module.exports = { editUser };
+
+const getUser = async (req, res) => {
+  const { id, nome, email, senha, cpf, telefone } = req.body;
+  try {
+    const user = await knex("usuarios").where("id", id).first();
+    if (!validateEmailDomain(!user)) {
+      return res
+        .status(400)
+        .json({ error: "Usuário inexistente" });
+    }
+    return res.status(200).json(nome, email, cpf, telefone)
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).send('Erro ao buscar usuário.');
+  }
+
+}
+
+
+module.exports = { editUser, getUser };
