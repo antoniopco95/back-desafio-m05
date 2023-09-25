@@ -8,7 +8,8 @@ const {
   getClient,
   getClientDefaulter,
   getClientToday,
-  createNewClient
+  createNewClient,
+  editClient
 } = require("./controllers/client");
 const {
   chargesOverdue,
@@ -30,6 +31,7 @@ rotas.post("/login", login);
 rotas.get("/usuarios", authorizeUser, getUser)
 rotas.put("/editar/:id", authorizeUser, editUser);
 rotas.get("/clientes", authorizeUser, getClient);
+rotas.put("/clientes/:id", authorizeUser, editClient)
 rotas.get("/cobrancas/vencidas", authorizeUser, chargesOverdue);
 rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges);
 rotas.get("/cobrancas/pagas", authorizeUser, paidCharges);

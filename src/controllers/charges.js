@@ -68,7 +68,7 @@ const paidCharges = async (req, res) => {
 
 const createCharge = async (req, res) => {
   try {
-    const { cliente_id, valor, paga, data_vencimento } = req.body;
+    const { cliente_id, valor, paga, data_vencimento, descricao } = req.body;
     if (!cliente_id || !valor || !paga || !data_vencimento) {
       return res
         .status(400)
@@ -84,8 +84,9 @@ const createCharge = async (req, res) => {
       cliente_id,
       valor,
       data_vencimento,
-      paga
-    }).returning('*');
+      paga,
+      descricao
+    });
 
     return res.json({ message: "Cobraça cadastrada com sucesso" });
   }
@@ -96,19 +97,19 @@ const createCharge = async (req, res) => {
 };
 
 const getCharge = async (req, res) => {
-  const { cliente_id, valor, paga, data_vencimento, descricao } = req.body;
+  const cliente_id = req.params.id;
   try {
-    const client = await knex("cobrancas").where("cliente_id", cliente_id).first();
-    if (!client) {
+    const charges = await knex("cobrancas").where("cliente_id", cliente_id);
+    if (!charges) {
       return res
         .status(400)
-        .json({ error: "Cliente inexistente" });
+        .json({ error: "Erro ao buscar cobranças" });
     }
-    return res.status(200).json(cliente_id, valor, paga, data_vencimento, descricao)
+    return res.status(200).json(charges)
 
   } catch (error) {
     console.log(error)
-    res.status(500).send('Erro ao buscar cliente.');
+    res.status(500).send('Erro ao buscar cobranças');
   }
 
 }
