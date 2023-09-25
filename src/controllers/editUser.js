@@ -4,13 +4,13 @@ const knex = require("knex")(require("../knexfile").development);
 
 
 const editUser = async (req, res) => {
-  const id = req.params.id;
-  const { nome, email, senha, cpf, telefone } = req.body;
   try {
+    const id = req.params.id;
+    const { nome, email, senha, cpf, telefone } = req.body;
     const user = await knex("usuarios").where("id", id).first();
 
     if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
+      return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
     const updatedUser = {};
@@ -33,7 +33,10 @@ const editUser = async (req, res) => {
             .status(400)
             .json({ error: "O email ja se encontra em uso" });
         }
+      }else{
+        updatedUser.email = email
       }
+
     }
     if (senha) {
       const hash = await bcrypt.hash(senha, 10);
@@ -46,7 +49,7 @@ const editUser = async (req, res) => {
     const { senha: _, ...userEdit } = updatedUser;
     return res.json({ message: "Usuário atualizado com sucesso.", userEdit });
   } catch (error) {
-    res.status(500).json({ message: "Erro ao atualizar usuário." });
+    return res.status(500).json({ error: "Erro ao atualizar usuário." });
   }
 };
 

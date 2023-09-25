@@ -2,12 +2,9 @@ const knex = require("knex")(require("../knexfile").development);
 
 const chargesOverdue = async (req, res) => {
   try {
-    const overdue = await knex
-      .select("cobranca.*", "cliente.nome")
-      .from("cobranca")
-      .join("cliente", "cobranca.cliente_id", "cliente.cliente_id")
-      .where("cobranca.status", "Vencida");
-
+    const charges =  await knex("cobranca").where('paga', false)
+    const dateCurrent = new Date()
+    const overdue = charges.filter(cobranca => new Date(cobranca.data_vencimento) < dateCurrent)
     let totalDue = 0;
     overdue.forEach((element) => {
       totalDue += parseFloat(element.valor);
@@ -20,16 +17,14 @@ const chargesOverdue = async (req, res) => {
         Total_Vencido: totalDue.toFixed(2),
       });
   } catch (error) {
-    res.status(500).send("Erro ao buscar o total devido por cliente.");
+    return res.status(500).json({error:"Erro ao buscar cobranças vencidas."});
   }
 };
 const expectedCharges = async (req, res) => {
   try {
-    const expected = await await knex
-      .select("cobranca.*", "cliente.nome")
-      .from("cobranca")
-      .join("cliente", "cobranca.cliente_id", "cliente.cliente_id")
-      .where("cobranca.status", "Prevista");
+    const charges = await await knex("cobranca").where('paga', false)
+    const dateCurrent = new Date()
+    const expected = charges.filter(cobranca => new Date(cobranca.data_vencimento) > dateCurrent )
     let totalExpected = 0;
     expected.forEach((element) => {
       totalExpected += parseFloat(element.valor);
@@ -40,16 +35,12 @@ const expectedCharges = async (req, res) => {
       total_previsto: totalExpected.toFixed(2),
     });
   } catch (error) {
-    res.status(500).send("Erro ao buscar o total devido por cliente.");
+    return res.status(500).json({error:"Erro ao buscar cobranças previstas."});
   }
 };
 const paidCharges = async (req, res) => {
   try {
-    const paid = await knex
-      .select("cobranca.*", "cliente.nome")
-      .from("cobranca")
-      .join("cliente", "cobranca.cliente_id", "cliente.cliente_id")
-      .where("cobranca.status", "Paga");
+   const paid =  await knex("cobranca").where('paga', true)
     let totalpaid = 0;
     paid.forEach((element) => {
       totalpaid += parseFloat(element.valor);
@@ -60,8 +51,7 @@ const paidCharges = async (req, res) => {
       total_pago: totalpaid.toFixed(2),
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Erro ao buscar o total devido por cliente.");
+    return res.status(500).json({error:"Erro ao buscar cobranças pagas."});
   }
 };
 
