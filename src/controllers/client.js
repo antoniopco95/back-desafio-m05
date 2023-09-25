@@ -81,9 +81,6 @@ const createNewClient = async (req, res) => {
     }
 }
 
-
-
-
 const getClientDefaulter = async (req, res) => {
     try {
         const subquery = knex('cobranca')

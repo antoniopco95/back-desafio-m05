@@ -86,15 +86,15 @@ const createCharge = async (req, res) => {
 };
 
 const getCharge = async (req, res) => {
-  const { cliente_id, valor, paga, data_vencimento, descricao } = req.body;
+  const cliente_id= req.params.id;
   try {
-    const client = await knex("cobrancas").where("cliente_id", cliente_id).first();
+    const client = await knex("cobrancas").where("cliente_id", cliente_id);
     if (!client) {
       return res
         .status(400)
         .json({ error: "Cliente inexistente" });
     }
-    return res.status(200).json(cliente_id, valor, paga, data_vencimento, descricao)
+    return res.status(200).json()
 
   } catch (error) {
     console.log(error)
