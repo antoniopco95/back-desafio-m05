@@ -17,6 +17,7 @@ const chargesOverdue = async (req, res) => {
         Total_Vencido: totalDue.toFixed(2),
       });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({error:"Erro ao buscar cobranças vencidas."});
   }
 };
@@ -101,20 +102,39 @@ const getCharges = async (req, res) => {
     return res.status(200).json(charges)
 
   } catch (error) {
-    console.log(error)
     res.status(500).json({error:'Erro ao buscar cobranças'});
   }
 
 }
 const myCharges = async (req, res)=>{
   try{
-    const id = req.params.id
-    const charges = await knex("cobranca").where("cliente_id", id)
-      if(!charges){
-        return res.status(404).json({error:"Erro ao buscar cobraças do cliente"})
-      }
-      return res.status(200).json(charges)
+      const id = req.params.id;
+    const charges = await knex("cobranca").where("cliente_id", id);
 
+    if (!charges || charges.length === 0) {
+        return res.status(404).json({ error: "Erro ao buscar cobranças do cliente" });
+    }
+
+    const chargesWithStatus = charges.map(charge => {
+        let status;
+        const today = new Date();
+        const dueDate = new Date(charge.data_vencimento);
+
+        if (charge.paga) {
+            status = 'paga';
+        } else if (dueDate > today) {
+            status = 'prevista';
+        } else {
+            status = 'vencida';
+        }
+
+        return {
+            ...charge,
+            status
+        };
+    });
+
+    return res.status(200).json(chargesWithStatus);
   }catch(error){
      return res.status(404).json({error:"Erro ao buscar cobraças do cliente"})
 
