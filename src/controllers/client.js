@@ -3,7 +3,7 @@ const { validateEmailDomain } = require("../validators/userValidator");
 
 const getClient = async (req, res) => {
     try {
-        const subquery = knex('cobranca')
+     const subquery = knex('cobranca')
         .distinct('cliente_id')
         .where('data_vencimento', '<', knex.fn.now())
         .andWhere('paga', '=', false);
