@@ -2,7 +2,10 @@ const knex = require("knex")(require("../knexfile").development);
 
 const chargesOverdue = async (req, res) => {
   try {
-    const charges =  await knex("cobranca").where('paga', false)
+     const charges = await knex('cobranca')
+      .join('cliente', 'cobranca.cliente_id', '=', 'cliente.cliente_id')
+      .select('cobranca.*', 'cliente.nome') 
+      .where('cobranca.paga', false);
     const dateCurrent = new Date()
     const overdue = charges.filter(cobranca => new Date(cobranca.data_vencimento) < dateCurrent)
     let totalDue = 0;
@@ -22,10 +25,16 @@ const chargesOverdue = async (req, res) => {
   }
 };
 const expectedCharges = async (req, res) => {
-  try {
-    const charges = await await knex("cobranca").where('paga', false)
-    const dateCurrent = new Date()
-    const expected = charges.filter(cobranca => new Date(cobranca.data_vencimento) > dateCurrent )
+   try {
+    const charges = await knex('cobranca')
+      .join('cliente', 'cobranca.cliente_id', '=', 'cliente.cliente_id')
+      .select('cobranca.*', 'cliente.nome') 
+      .where('cobranca.paga', false);
+
+    const dateCurrent = new Date();
+
+    const expected = charges.filter(cobranca => new Date(cobranca.data_vencimento) > dateCurrent);
+
     let totalExpected = 0;
     expected.forEach((element) => {
       totalExpected += parseFloat(element.valor);
@@ -36,12 +45,15 @@ const expectedCharges = async (req, res) => {
       total_previsto: totalExpected.toFixed(2),
     });
   } catch (error) {
-    return res.status(500).json({error:"Erro ao buscar cobranças previstas."});
+    return res.status(500).json({ error: "Erro ao buscar cobranças previstas." });
   }
 };
 const paidCharges = async (req, res) => {
   try {
-   const paid =  await knex("cobranca").where('paga', true)
+    const paid = await knex('cobranca')
+      .join('cliente', 'cobranca.cliente_id', '=', 'cliente.cliente_id')
+      .select('cobranca.*', 'cliente.nome') 
+      .where('cobranca.paga', true);
     let totalpaid = 0;
     paid.forEach((element) => {
       totalpaid += parseFloat(element.valor);
