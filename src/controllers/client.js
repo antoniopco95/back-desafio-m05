@@ -3,10 +3,21 @@ const { validateEmailDomain } = require("../validators/userValidator");
 
 const getClient = async (req, res) => {
     try {
-        const client = await knex('cliente').select("*");
-        return res.status(200).json(client)
+        const subquery = knex('cobranca')
+        .distinct('cliente_id')
+        .where('data_vencimento', '<', knex.fn.now())
+        .andWhere('paga', '=', false);
+
+        knex('cliente')
+        .select('cliente.cliente_id', 'cliente.nome')
+        .leftJoin(subquery.as('ci'), 'cliente.cliente_id', 'ci.cliente_id')
+        .select(knex.raw('CASE WHEN "ci"."cliente_id" IS NOT NULL THEN ? ELSE ? END AS status', ['Inadimplente', 'Em dia']))
+        .then(result => {
+            return res.status(200).json(result)
+        })
 
     } catch (error) {
+        console.log(error)
         return res.status(500).json({error:'Erro ao buscar clientes.'});
     }
 }
