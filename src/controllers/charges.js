@@ -80,7 +80,7 @@ const createCharge = async (req, res) => {
       descricao
     });
 
-    return res.status(200).json({ error: "Cobraça cadastrada com sucesso" });
+    return res.status(200).json({ message : "Cobraça cadastrada com sucesso" });
   }
   catch (error) {
     console.log(error);
