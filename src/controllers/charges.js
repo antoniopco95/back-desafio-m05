@@ -121,13 +121,12 @@ const myCharges = async (req, res)=>{
         const dueDate = new Date(charge.data_vencimento);
 
         if (charge.paga) {
-            status = 'paga';
+            status = 'Paga';
         } else if (dueDate > today) {
-            status = 'prevista';
+            status = 'Prevista';
         } else {
-            status = 'vencida';
+            status = 'Vencida';
         }
-
         return {
             ...charge,
             status

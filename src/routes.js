@@ -38,7 +38,7 @@ rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges);
 rotas.get("/cobrancas/pagas", authorizeUser, paidCharges);
 rotas.get("/cobrancas", authorizeUser, getCharges)
 rotas.get("/cliente/cobranca/:id", authorizeUser, myCharges)
-rotas.post("/cobrancas", authorizeUser, createCharge);
+rotas.post("/create-charge", authorizeUser, createCharge);
 
 rotas.get("/clientes/inadimplentes", authorizeUser, getClientDefaulter);
 rotas.get("/clientes/em-dia", authorizeUser, getClientToday);
