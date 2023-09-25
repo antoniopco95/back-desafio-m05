@@ -23,15 +23,17 @@ const getClient = async (req, res) => {
     }
 }
 
-const client = async (req, res) => {
-    try {
-        const { cliente_id } = req.params;
-        const client = await knex('cliente').select("*").where("id", cliente_id).first();
+const client = async(req,res) => {
+  try{
+     const id = req.params.id;
+        const client = await knex('cliente').select("*").where("cliente_id", id).first();
         return res.status(200).json(client)
-    }
-    catch (error) {
-        return res.status(500).json({ error: 'Erro ao buscar cliente.' });
-    }
+  }
+  catch(error) {
+     return res.status(500).json({error:'Erro ao buscar cliente.'});
+}
+}
+
 
 
     const createNewClient = async (req, res) => {
@@ -81,15 +83,25 @@ const client = async (req, res) => {
         }
     }
 
+const getClientDefaulter = async (req, res) => {
+    try {
+        const subquery = knex('cobranca')
+        .distinct('cliente_id')
+        .where('data_vencimento', '<', knex.fn.now())
+        .andWhere('paga', '=', false);
+        
+        knex('cliente')
+        .select('cliente.cliente_id', 'cliente.nome')
+        .leftJoin(subquery.as('ci'), 'cliente.cliente_id', 'ci.cliente_id')
+        .select(knex.raw('CASE WHEN "ci"."cliente_id" IS NOT NULL THEN ? ELSE ? END AS status', ['Inadimplente', 'Em dia']))
+        .then(result =>{
+            const defaulter= result.filter(r => r.status === 'Inadimplente');
+            return res.status(200).json(defaulter);
+        })
+    } catch (error) {
+        res.status(500).send('Erro ao buscar clientes em dia.');
+    }
 
-
-
-    const getClientDefaulter = async (req, res) => {
-        try {
-            const subquery = knex('cobranca')
-                .distinct('cliente_id')
-                .where('data_vencimento', '<', knex.fn.now())
-                .andWhere('paga', '=', false);
 
             knex('cliente')
                 .select('cliente.cliente_id', 'cliente.nome')

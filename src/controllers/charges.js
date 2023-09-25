@@ -87,14 +87,17 @@ const createCharge = async (req, res) => {
 };
 
 const getCharge = async (req, res) => {
+
   const cliente_id = req.params.id;
   try {
     const charges = await knex("cobrancas").where("cliente_id", cliente_id);
     if (!charges) {
+
       return res
         .status(400)
         .json({ error: "Erro ao buscar cobranças" });
     }
+
     return res.status(200).json(charges)
 
   } catch (error) {
