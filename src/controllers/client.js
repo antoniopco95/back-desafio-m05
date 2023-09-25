@@ -9,7 +9,7 @@ const getClient = async (req, res) => {
         .andWhere('paga', '=', false);
 
         knex('cliente')
-        .select('cliente.cliente_id', 'cliente.nome')
+        .select('cliente.cliente_id', 'cliente.nome', 'cliente.cpf', 'cliente.telefone')
         .leftJoin(subquery.as('ci'), 'cliente.cliente_id', 'ci.cliente_id')
         .select(knex.raw('CASE WHEN "ci"."cliente_id" IS NOT NULL THEN ? ELSE ? END AS status', ['Inadimplente', 'Em dia']))
         .then(result => {
