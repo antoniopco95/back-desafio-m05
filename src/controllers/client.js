@@ -126,7 +126,7 @@ const getClientDefaulter = async (req, res) => {
 
     const editClient = async (req, res) => {
         const id = req.params.id;
-        const { nome, email, cpf, telefone, endereco, cep, bairro, cidade, uf } = req.body;
+        const { nome, email, cpf, telefone, endereco, cep, complemento,bairro, cidade, uf } = req.body;
         try {
             const cliente = await knex("cliente").where("cliente_id", id).first();
 
@@ -179,6 +179,7 @@ const getClientDefaulter = async (req, res) => {
                 }
             }
             if (telefone) updatedClient.telefone = telefone;
+            if(complemento) updatedClient.complemento = complemento
             if (endereco) updatedClient.endereco = endereco;
             if (cep) updatedClient.cep = cep;
             if (bairro) updatedClient.bairro = bairro;
