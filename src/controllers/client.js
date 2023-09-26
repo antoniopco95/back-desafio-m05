@@ -187,9 +187,9 @@ const getClientDefaulter = async (req, res) => {
             if (uf) updatedClient.uf = uf;
 
             await knex("cliente").where("cliente_id", id).update(updatedClient);
-            return res.json({ messagem: "Cliente atualizado com sucesso."});
+            return res.json({ message: "Cliente atualizado com sucesso."});
         } catch (error) {
-            return res.status(500).json({ message: "Erro ao atualizar cliente." });
+            return res.status(500).json({ error: "Erro ao atualizar cliente." });
         }
     };
 
