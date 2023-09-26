@@ -102,16 +102,39 @@ const createCharge = async (req, res) => {
 
 const getCharges = async (req, res) => {
 
-  try {
-    const charges = await knex("cobranca").select('*');
-    if (!charges) {
+   try {
+    const dateCurrent = new Date();
 
+    const chargesWithDetails = await knex('cobranca')
+      .join('cliente', 'cobranca.cliente_id', '=', 'cliente.cliente_id')
+      .select('cobranca.*', 'cliente.nome')
+      .then(charges => 
+        charges.map(charge => {
+          let status;
+          const dueDate = new Date(charge.data_vencimento);
+
+          if (charge.paga) {
+            status = 'paga';
+          } else if (dueDate > dateCurrent) {
+            status = 'prevista';
+          } else {
+            status = 'vencida';
+          }
+
+          return {
+            ...charge,
+            status
+          };
+        })
+      );
+
+    if (!chargesWithDetails || chargesWithDetails.length === 0) {
       return res
         .status(400)
         .json({ error: "Erro ao buscar cobranças" });
     }
 
-    return res.status(200).json(charges)
+    return res.status(200).json(chargesWithDetails)
 
   } catch (error) {
     res.status(500).json({error:'Erro ao buscar cobranças'});
