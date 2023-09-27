@@ -52,13 +52,13 @@ const editUser = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { id, nome, email, senha, cpf, telefone } = req.body;
+  const { id } = req.body;
   try {
     const user = await knex("usuarios").where("id", id).first();
     if (!user) {
       return res.status(400).json({ error: "Usuário inexistente" });
     }
-    return res.status(200).json({nome, email, cpf, telefone});
+    return res.status(200).json(user);
   } catch (error) {
     console.log(error);
     res.status(500).send("Erro ao buscar usuário.");
