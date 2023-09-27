@@ -52,7 +52,8 @@ const editUser = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { id } = req.body;
+  return res.json(req.usuario);
+  /*   const { id } = req.body;
   try {
     const user = await knex("usuarios").where("id", id).first();
     if (!user) {
@@ -62,7 +63,7 @@ const getUser = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send("Erro ao buscar usuário.");
-  }
+  } */
 };
 
 module.exports = { editUser, getUser };
