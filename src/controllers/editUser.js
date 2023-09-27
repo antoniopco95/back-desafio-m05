@@ -52,9 +52,11 @@ const editUser = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { id } = req.body;
+  /* const { id } = req.body; */
+  const user = user.req;
+  const userId = user.id;
   try {
-    const user = await knex("usuarios").where("id", id).first();
+    const user = await knex("usuarios").where("id", /* id */ userId).first();
     if (!user) {
       return res.status(400).json({ error: "Usuário inexistente" });
     }
