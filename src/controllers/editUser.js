@@ -58,7 +58,7 @@ const getUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: "Usuário inexistente" });
     }
-    return res.status(200).json(nome, email, cpf, telefone);
+    return res.status(200).json({nome, email, cpf, telefone});
   } catch (error) {
     console.log(error);
     res.status(500).send("Erro ao buscar usuário.");
