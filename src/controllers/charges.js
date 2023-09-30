@@ -173,6 +173,8 @@ const myCharges = async (req, res)=>{
      return res.status(404).json({error:"Erro ao buscar cobraças do cliente"})
 
   }
+
 }
+
 
 module.exports = { chargesOverdue, expectedCharges, paidCharges, createCharge, getCharges, myCharges };

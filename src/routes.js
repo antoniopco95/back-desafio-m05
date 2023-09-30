@@ -1,9 +1,5 @@
 const express = require("express");
 const rotas = express();
-const { editUser, getUser } = require("./controllers/editUser");
-const { authorizeUser } = require("./middlewares/authentication");
-const { register } = require("./controllers/userRegister");
-const { login } = require("./controllers/userLogin");
 const {
   getClient,
   getClientDefaulter,
@@ -20,11 +16,16 @@ const {
   getCharges, 
   myCharges
 } = require("./controllers/charges");
-const { validateReq } = require("./middlewares/validation");
 const {
   registerUserSchema,
   registerClientSchema,
 } = require("./validators/registerSchema");
+const { editUser, getUser } = require("./controllers/editUser");
+const { authorizeUser } = require("./middlewares/authentication");
+const { register } = require("./controllers/userRegister");
+const { login } = require("./controllers/userLogin");
+const { validateReq } = require("./middlewares/validation");
+const { queryCharges, queryClient } = require("./controllers/query");
 
 rotas.use(express.json());
 
@@ -36,7 +37,7 @@ rotas.put("/editar/:id", authorizeUser, editUser);
 rotas.get("/cobrancas/vencidas", authorizeUser, chargesOverdue);
 rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges);
 rotas.get("/cobrancas/pagas", authorizeUser, paidCharges);
-rotas.get("/cobrancas", authorizeUser, getCharges)
+rotas.get("/cobrancas/", authorizeUser, getCharges)
 rotas.get("/cliente/cobranca/:id", authorizeUser, myCharges)
 rotas.post("/create-charge", authorizeUser, createCharge);
 
@@ -47,4 +48,6 @@ rotas.get("/clientes", authorizeUser, getClient);
 rotas.post("/create-cliente", authorizeUser, validateReq(registerClientSchema), createNewClient),
 rotas.put('/cliente/:id', authorizeUser, editClient)
 
+rotas.get('/cobrancas/query/', authorizeUser, queryCharges)
+rotas.get('/clientes/query/', authorizeUser , queryClient)
   module.exports = rotas;
