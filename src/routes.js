@@ -17,7 +17,10 @@ const {
   expectedCharges,
   paidCharges,
   createCharge,
-  getCharge
+  getCharge,
+  deleteCharge,
+  detailsCharge,
+  editCharge
 } = require("./controllers/charges");
 const { validateReq } = require("./middlewares/validation");
 const {
@@ -37,9 +40,12 @@ rotas.get("/cobrancas/vencidas", authorizeUser, chargesOverdue);
 rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges);
 rotas.get("/cobrancas/pagas", authorizeUser, paidCharges);
 rotas.post("/cobrancas", authorizeUser, createCharge);
-rotas.get("/cobrancas", authorizeUser, getCharge)
+rotas.get("/cobrancas", authorizeUser, getCharge);
+rotas.put("cobrancas", authorizeUser, editCharge);
+rotas.get("/cobrancas", authorizeUser, detailsCharge);
+rotas.delete("/cobrancas", authorizeUser, deleteCharge);
 rotas.get("/clientes/inadimplentes", authorizeUser, getClientDefaulter);
 rotas.get("/clientes/em-dia", authorizeUser, getClientToday);
 rotas.post("/create-cliente", authorizeUser, validateReq(registerClientSchema), createNewClient),
-rotas.get("/cliente/?:id", authorizeUser,client )
-  module.exports = rotas;
+  rotas.get("/cliente/?:id", authorizeUser, client)
+module.exports = rotas;
