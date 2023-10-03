@@ -169,5 +169,24 @@ const editCharge = async (req, res) => {
   }
 };
 
+const detailsCharge = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const cobranca = await knex("cobranca")
+      .select("nome", "descricao", "data_vencimento", "valor", "paga", "cobranca_id")
+      .where("id", id)
+      .first();
+
+    if (!cobranca) {
+      return res.status(404).json({ message: "Cobrança não encontrada." });
+    }
+
+    res.status(200).json(cobranca);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erro ao buscar cobrança." });
+  }
+};
 
 module.exports = { chargesOverdue, expectedCharges, paidCharges, createCharge, getCharge, deleteCharge, detailsCharge, editCharge };
