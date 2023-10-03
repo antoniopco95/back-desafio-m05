@@ -12,8 +12,8 @@ const {
   chargesOverdue,
   expectedCharges,
   paidCharges,
+  getCharges,
   createCharge,
-  getCharge,
   deleteCharge,
   detailsCharge,
   editCharge, 
@@ -52,13 +52,13 @@ rotas.get("/cliente/:id", authorizeUser,client )
 rotas.get("/clientes", authorizeUser, getClient);
 rotas.post("/create-cliente", authorizeUser, validateReq(registerClientSchema), createNewClient),
 
-rotas.put("cobrancas", authorizeUser, editCharge);
-rotas.get("/cobrancas", authorizeUser, detailsCharge);
-rotas.delete("/cobrancas", authorizeUser, deleteCharge);
+rotas.put("cobrancas/:id", authorizeUser, editCharge);
+rotas.get("/cobrancas/:id", authorizeUser, detailsCharge);
+rotas.delete("/cobrancas/:id", authorizeUser, deleteCharge);
 
 rotas.put('/cliente/:id', authorizeUser, editClient)
-
 rotas.get('/cobrancas/query/', authorizeUser, queryCharges)
 rotas.get('/clientes/query/', authorizeUser , queryClient)
-  module.exports = rotas;
+
+module.exports = rotas;
 

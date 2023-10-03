@@ -20,7 +20,6 @@ const chargesOverdue = async (req, res) => {
         Total_Vencido: totalDue.toFixed(2),
       });
   } catch (error) {
-    console.log(error)
     return res.status(500).json({error:"Erro ao buscar cobranças vencidas."});
   }
 };
@@ -73,7 +72,6 @@ const paidCharges = async (req, res) => {
 const createCharge = async (req, res) => {
   try {
     const { cliente_id, valor, paga, data_vencimento, descricao } = req.body;
-    console.log(req.body)
     if (!cliente_id || !valor || !paga || !data_vencimento) {
       return res
         .status(400)
@@ -97,7 +95,7 @@ const createCharge = async (req, res) => {
   }
   catch (error) {
     console.log(error);
-    res.status(500).json("Erro ao criar cobrança.");
+    return res.status(500).json("Erro ao criar cobrança.");
   }
 };
 
@@ -144,33 +142,32 @@ const getCharges = async (req, res) => {
 
 
 const deleteCharge = async (req, res) => {
-  const { cobranca_id, paga, data_vencimento } = req.params;
+  const { id } = req.params;
 
   try {
     const cobranca = await knex('cobranca')
-      .where({
-        cobranca_id: cobranca_id
-      })
+      .where("cobranca_id ",id)
       .first()
 
     if (!cobranca) {
-      return res.status(404).json('Cobrança não encontrada')
+      return res.status(404).json({error:'Cobrança não encontrada'})
     }
 
 
     const chargeDeleted = await knex('cobranca')
-      .where({ cobranca_id: cobranca_id })
+    .where("cobranca_id",id )
       .where('data_vencimento', '<=', knex.fn.now())
       .andWhere('paga', '=', false).del();
 
 
     if (!chargeDeleted) {
-      return res.status(400).json('Cobrança não foi excluida,  já se encontra paga')
+      return res.status(400).json({error:'Cobrança não foi excluida,  já se encontra paga'})
     }
 
-    return res.status(200).json('Cobrança excluida com sucesso')
+    return res.status(200).json({message:'Cobrança excluida com sucesso'})
   } catch (error) {
-    return res.status(400).json('Não foi possivel excluir a cobrança')
+    console.log(error)
+    return res.status(400).json({error:'Não foi possivel excluir a cobrança'})
   }
 }
 const myCharges = async (req, res)=>{
@@ -202,7 +199,7 @@ const myCharges = async (req, res)=>{
 
     return res.status(200).json(chargesWithStatus);
   }catch(error){
-     return res.status(404).json({error:"Erro ao buscar cobraças do cliente"})
+    return res.status(404).json({error:"Erro ao buscar cobraças do cliente"})
 
   }
 
@@ -233,7 +230,7 @@ const editCharge = async (req, res) => {
 
     return res.status(202).json({ message: "Cobrança editada com sucesso." });
   } catch (error) {
-    res.status(500).json({ message: "Erro ao editar cobrança." });
+    return res.status(500).json({ message: "Erro ao editar cobrança." });
   }
 };
 
@@ -251,13 +248,12 @@ const detailsCharge = async (req, res) => {
       return res.status(404).json({ message: "Cobrança não encontrada." });
     }
 
-    res.status(200).json(cobranca);
+    return res.status(200).json(cobranca);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Erro ao buscar cobrança." });
+    return res.status(500).json({ message: "Erro ao buscar cobrança." });
   }
 };
 
 
-module.exports = { chargesOverdue, expectedCharges, paidCharges, createCharge, getCharge, deleteCharge, detailsCharge, editCharge };
+module.exports = { chargesOverdue, expectedCharges, paidCharges, createCharge, myCharges, getCharges, deleteCharge, detailsCharge, editCharge };
 

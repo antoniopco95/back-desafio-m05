@@ -1,5 +1,4 @@
 const knex = require("knex")(require("../knexfile").development);
-const { number } = require("joi");
 const { validateEmailDomain } = require("../validators/userValidator");
 
 const getClient = async (req, res) => {
@@ -102,20 +101,6 @@ const getClientDefaulter = async (req, res) => {
     } catch (error) {
         res.status(500).send('Erro ao buscar clientes em dia.');
     }
-
-
-    knex('cliente')
-        .select('cliente.cliente_id', 'cliente.nome')
-        .leftJoin(subquery.as('ci'), 'cliente.cliente_id', 'ci.cliente_id')
-        .select(knex.raw('CASE WHEN "ci"."cliente_id" IS NOT NULL THEN ? ELSE ? END AS status', ['Inadimplente', 'Em dia']))
-        .then(result => {
-            const defaulter = result.filter(r => r.status === 'Inadimplente');
-            return res.status(200).json(defaulter);
-        })
-         catch (error) {
-        res.status(500).send('Erro ao buscar clientes em dia.');
-    }
-
 }
 const getClientToday = async (req, res) => {
         try {
