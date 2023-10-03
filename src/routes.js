@@ -52,7 +52,7 @@ rotas.get("/cliente/:id", authorizeUser,client )
 rotas.get("/clientes", authorizeUser, getClient);
 rotas.post("/create-cliente", authorizeUser, validateReq(registerClientSchema), createNewClient),
 
-rotas.put("cobrancas/:id", authorizeUser, editCharge);
+rotas.put("/cobrancas/:id", authorizeUser, editCharge);
 rotas.get("/cobrancas/:id", authorizeUser, detailsCharge);
 rotas.delete("/cobrancas/:id", authorizeUser, deleteCharge);
 
