@@ -108,7 +108,7 @@ const getCharge = async (req, res) => {
 
 
 const deleteCharge = async (req, res) => {
-  const { cobranca_id, status, data_vencimento } = req.params;
+  const { cobranca_id, paga, data_vencimento } = req.params;
 
   try {
     const cobranca = await knex('cobranca')
@@ -121,21 +121,53 @@ const deleteCharge = async (req, res) => {
       return res.status(404).json('Cobrança não encontrada')
     }
 
-    if (status === false && data_vencimento <= ) {
-      const chargeDeleted = await knex('cobranca').where({
-        cobranca_id: cobranca_id
-      }).del();
-    }
-    else if (!chargeDeleted) {
-      return res.status(400).json('Cobrança não foi excluida,  já se encontra paga')
-    }
 
-    return res.status(200).json('Cobrança excluida com sucesso')
-  } catch (error) {
-    return res.status(400).json('Não foi possivel excluir a cobrança')
-  }
+    const chargeDeleted = await knex('cobranca')
+      .where({ cobranca_id: cobranca_id })
+      .where('data_vencimento', '<=', knex.fn.now())
+      .andWhere('paga', '=', false);
+.del();
+
+if (!chargeDeleted) {
+  return res.status(400).json('Cobrança não foi excluida,  já se encontra paga')
 }
 
+return res.status(200).json('Cobrança excluida com sucesso')
+} catch (error) {
+  return res.status(400).json('Não foi possivel excluir a cobrança')
+}
+}
+
+
+
+const editCharge = async (req, res) => {
+  const id = req.params.id;
+  const { nome, descricao, data_vencimento, valor, paga } = req.body;
+  try {
+    const cobranca = await knex("cobranca").where("id", id).first();
+
+    if (!cobranca) {
+      return res.status(404).json({ message: "Cobrança não encontrada." });
+    }
+
+    const updatedCharge = {};
+
+    if (descricao) updatedCharge.descricao = descricao;
+    if (data_vencimento) updatedCharge.data_vencimento = data_vencimento;
+    if (valor) updatedCharge.valor = valor;
+    if (paga) updatedCharge.paga = paga;
+
+    if (!descricao || !data_vencimento || !valor || paga === undefined) {
+      return res.status(400).json({ message: "Todos os campos são obrigatórios." });
+    }
+
+    await knex("cliente").where("id", id).update(updatedCharge);
+    const { ...chargeEdit } = updatedCharge;
+    return res.json({ message: "Cobrança editada com sucesso.", chargeEdit });
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao editar cobrança." });
+  }
+};
 
 
 module.exports = { chargesOverdue, expectedCharges, paidCharges, createCharge, getCharge, deleteCharge, detailsCharge, editCharge };
