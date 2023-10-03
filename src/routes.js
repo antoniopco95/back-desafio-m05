@@ -13,7 +13,10 @@ const {
   expectedCharges,
   paidCharges,
   createCharge,
-  getCharges, 
+  getCharge,
+  deleteCharge,
+  detailsCharge,
+  editCharge, 
   myCharges
 } = require("./controllers/charges");
 const {
@@ -37,17 +40,25 @@ rotas.put("/editar/:id", authorizeUser, editUser);
 rotas.get("/cobrancas/vencidas", authorizeUser, chargesOverdue);
 rotas.get("/cobrancas/previstas", authorizeUser, expectedCharges);
 rotas.get("/cobrancas/pagas", authorizeUser, paidCharges);
+
 rotas.get("/cobrancas/", authorizeUser, getCharges)
 rotas.get("/cliente/cobranca/:id", authorizeUser, myCharges)
 rotas.post("/create-charge", authorizeUser, createCharge);
+
 
 rotas.get("/clientes/inadimplentes", authorizeUser, getClientDefaulter);
 rotas.get("/clientes/em-dia", authorizeUser, getClientToday);
 rotas.get("/cliente/:id", authorizeUser,client )
 rotas.get("/clientes", authorizeUser, getClient);
 rotas.post("/create-cliente", authorizeUser, validateReq(registerClientSchema), createNewClient),
+
+rotas.put("cobrancas", authorizeUser, editCharge);
+rotas.get("/cobrancas", authorizeUser, detailsCharge);
+rotas.delete("/cobrancas", authorizeUser, deleteCharge);
+
 rotas.put('/cliente/:id', authorizeUser, editClient)
 
 rotas.get('/cobrancas/query/', authorizeUser, queryCharges)
 rotas.get('/clientes/query/', authorizeUser , queryClient)
   module.exports = rotas;
+
