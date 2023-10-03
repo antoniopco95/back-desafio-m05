@@ -1,4 +1,5 @@
 const knex = require("knex")(require("../knexfile").development);
+const { number } = require("joi");
 const { validateEmailDomain } = require("../validators/userValidator");
 
 const getClient = async (req, res) => {
@@ -115,8 +116,8 @@ const getClientDefaulter = async (req, res) => {
         res.status(500).send('Erro ao buscar clientes em dia.');
     }
 
-
-    const getClientToday = async (req, res) => {
+}
+const getClientToday = async (req, res) => {
         try {
             const subquery = knex('cobranca')
                 .distinct('cliente_id')
@@ -139,15 +140,15 @@ const getClientDefaulter = async (req, res) => {
 
     const editClient = async (req, res) => {
         const id = req.params.id;
-        const { nome, email, cpf, telefone, endereco, cep, bairro, cidade, uf } = req.body;
+        const { nome, email, cpf, telefone, endereco, cep, complemento,bairro, cidade, uf } = req.body;
         try {
-            const cliente = await knex("cliente").where("id", id).first();
+            const cliente = await knex("cliente").where("cliente_id", id).first();
 
             if (!cliente) {
                 return res.status(404).json({ message: "Cliente não encontrado." });
             }
 
-            const updatedClient = {};
+            const updatedClient = {...cliente};
 
             if (nome) updatedClient.nome = nome;
             if (email) {
@@ -160,7 +161,7 @@ const getClientDefaulter = async (req, res) => {
                 }
 
                 if (existEmail) {
-                    if (id === existEmail.cliente_id) {
+                    if (Number(id) === existEmail.cliente_id) {
                         updatedClient.email = email;
                     } else {
                         return res
@@ -171,11 +172,12 @@ const getClientDefaulter = async (req, res) => {
                 updatedClient.email = email
             }
             if (cpf) {
-                if (cpf.lenght === 11) {
+                console.log(cpf.length)
+                if (cpf.length === 11) {
                     const existCpf = await knex("cliente").where("cpf", cpf).first();
 
                     if (existCpf) {
-                        if (id === existCpf.cliente_id) {
+                        if (Number(id) === existCpf.cliente_id) {
                             updatedClient.cpf = cpf;
                         } else {
                             return res
@@ -191,17 +193,17 @@ const getClientDefaulter = async (req, res) => {
                 }
             }
             if (telefone) updatedClient.telefone = telefone;
+            if(complemento) updatedClient.complemento = complemento
             if (endereco) updatedClient.endereco = endereco;
             if (cep) updatedClient.cep = cep;
             if (bairro) updatedClient.bairro = bairro;
             if (cidade) updatedClient.cidade = cidade;
             if (uf) updatedClient.uf = uf;
 
-            await knex("cliente").where("id", id).update(updatedClient);
-            const { ...userEdit } = updatedClient;
-            return res.json({ message: "Cliente atualizado com sucesso.", userEdit });
+            await knex("cliente").where("cliente_id", id).update(updatedClient);
+            return res.json({ message: "Cliente atualizado com sucesso."});
         } catch (error) {
-            res.status(500).json({ message: "Erro ao atualizar cliente." });
+            return res.status(500).json({ error: "Erro ao atualizar cliente." });
         }
     };
 

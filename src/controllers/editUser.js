@@ -2,7 +2,6 @@ const bcrypt = require("bcryptjs");
 const { validateEmailDomain } = require("../validators/userValidator");
 const knex = require("knex")(require("../knexfile").development);
 
-
 const editUser = async (req, res) => {
   try {
     const id = req.params.id;
@@ -33,10 +32,9 @@ const editUser = async (req, res) => {
             .status(400)
             .json({ error: "O email ja se encontra em uso" });
         }
-      }else{
-        updatedUser.email = email
+      } else {
+        updatedUser.email = email;
       }
-
     }
     if (senha) {
       const hash = await bcrypt.hash(senha, 10);
@@ -53,24 +51,10 @@ const editUser = async (req, res) => {
   }
 };
 
-
 const getUser = async (req, res) => {
-  const { id, nome, email, senha, cpf, telefone } = req.body;
-  try {
-    const user = await knex("usuarios").where("id", id).first();
-    if (!validateEmailDomain(!user)) {
-      return res
-        .status(400)
-        .json({ error: "Usuário inexistente" });
-    }
-    return res.status(200).json(nome, email, cpf, telefone)
-
-  } catch (error) {
-    console.log(error)
-    res.status(500).send('Erro ao buscar usuário.');
-  }
-
-}
-
+  return res.json(req.usuario);
+};
 
 module.exports = { editUser, getUser };
+
+/* !validateEmailDomain(!user) */
