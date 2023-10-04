@@ -239,17 +239,29 @@ const detailsCharge = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const cobranca = await knex("cobranca")
+    const charge = await knex("cobranca")
       .join("cliente", "cobranca.cliente_id", "=", "cliente.cliente_id")
       .where("cobranca_id", id)
       .select("cobranca.*", "cliente.nome").first();
+      let status;
+      const dueDate = new Date(charge.data_vencimento)
+      const today = new Date()
+       if (charge.paga) {
+            status = 'Paga';
+        } else if (dueDate > today) {
+            status = 'Prevista';
+        } else {
+            status = 'Vencida';
+        }
+       
 
-    if (!cobranca) {
+    if (!charge) {
       return res.status(404).json({ message: "Cobrança não encontrada." });
     }
 
-    return res.status(200).json(cobranca);
+    return res.status(200).json({...charge, status});
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ message: "Erro ao buscar cobrança." });
   }
 };
