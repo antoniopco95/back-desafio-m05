@@ -156,7 +156,7 @@ const deleteCharge = async (req, res) => {
 
     const chargeDeleted = await knex('cobranca')
     .where("cobranca_id",id )
-      .where('data_vencimento', '<=', knex.fn.now())
+      .where('data_vencimento', '>=', knex.fn.now())
       .andWhere('paga', '=', false).del();
 
 
